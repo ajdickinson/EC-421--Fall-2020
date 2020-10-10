@@ -24,7 +24,7 @@ Some Useful Resources:
 **Homework 1**
 
 
-**Lab 1**: [Learning R: Introduction link 1](https://github.com/ajdickinson/EC-421---Fall-2020/blob/main/Lab_01/Lab_01.md)
+**Lab 1**: [Learning R: Introduction](https://github.com/ajdickinson/EC-421---Fall-2020/blob/main/Lab_01/Lab_01.md)
 - Objects, Functions, Mathematical Operators, Dataframes, Regression, Basic Plots
 
 
