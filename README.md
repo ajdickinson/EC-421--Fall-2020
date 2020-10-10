@@ -24,6 +24,11 @@ Some Useful Resources:
 **Homework 1**
 
 
+**Lab 1**: [Learning R: Introduction link 1](https://github.com/ajdickinson/421---Fall-2020/Lab_01/Lab_01.md)
+- Objects, Functions, Mathematical Operators, Dataframes, Regression, Basic Plots
+
+
+
 
 If you're adventurous, Grant McDermott's data science for economists is an amazing resource. It's designed for PhD students, but not those with any experience with computers. If metrics is your calling, you might enjoy looking at these.
 
