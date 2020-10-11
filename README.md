@@ -28,6 +28,7 @@ Some Useful Resources:
 - Objects, Functions, Mathematical Operators, Dataframes, Regression, Basic Plots
 
 **Lab 02**: [Learning R: Introduction to Data Manipulation - link 1](https://github.com/ajdickinson/EC-421---Fall-2020/blob/main/Lab_02/Lab_02.md), [Alternative - link 2](https://rpubs.com/adick/673977)
+- Directories, Loading Data, Mutate(), Filter(), Select(), Intro ggplot2
 
 
 If you're adventurous, Grant McDermott's data science for economists is an amazing resource. It's designed for PhD students, but not those with any experience with computers. If metrics is your calling, you might enjoy looking at these.
