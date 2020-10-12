@@ -457,3 +457,51 @@ ggplot(pres_df, aes(x = year_month, y = approve)) +
   xlab('Time')  +
   geom_vline(xintercept =	as.POSIXct("2001-09-01"), col="red")
 ```
+
+## Some questions being asked from the previous lab
+ 
+- What does `%>%` sign do exactly and why do we need it?
+
+As mentioned earlier, this is called a pipe operator `%>%`. This operator would forward a value or the result of the expression on the left to the next function call. This lets us pass one command to another. The reason we need this operator is to make our codes more efficient and legible. 
+
+For example, the following two commnads return exactly the same result. However, notice that the first one is a "nested" option which the functions are nested within one another. The problem is that if you add more functions using nested option, it's hard to keep track of what exactly the code is doing and becomes easier to make mistakes when making updates to your codes. 
+
+Thus the alternative option is to use a pipe operator, which makes our codes more readable and easier to spot a mistake if the r gives us an error. 
+```{r}
+# Nested version
+tail(filter(pres_df, year %in% c(2001, 2002)))
+
+# Using pipes
+pres_df %>%
+  filter(year %in% c(2001, 2002)) %>%
+  tail()
+```
+
+- What does `%in%` do? 
+
+`%in%` operator is used to identify if the left hand side vector is included in the right hand side vector. Let's see the examples below. 
+
+```{r}
+6:10 %in% 1:36
+```
+As you can see, the sequence from 6 to 10 is included in sequence from 1 to 36. Therefore, r is going to return 5 logical values of TRUE. Let's see another example.
+
+```{r}
+6:10 %in% 1:8
+```
+
+As you can see, some elements in 6:10 sequence are included in 1:8 and some elements are not. Here, since 6, 7, 8 are included in the right hand side sequence while the rest of the elements are not,  we are going to observe three logical value of TRUE and 2 logical value of FALSE. 
+
+Back to our example, the following command will return 65 logical values consisting of either TRUE or FALSE. It's going to return TRUE if an observation falls either in 2001 OR 2002. It's going to return FALSE if an observation falls in other years.  
+
+```{r}
+pres_df$year %in% c(2001, 2002)
+```
+
+Now, if we wrap around it with filter function, it's going to select only the observations with "TRUE" out of the total 65 observations. From that filtered dataset, tail function would make you able to view the last 6 observations.  
+
+```{r}
+pres_df %>%
+  filter(year %in% c(2001, 2002)) %>%
+  tail()
+```
