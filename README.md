@@ -20,6 +20,7 @@ Some Useful Resources:
 - Another few of the most useful pages you can find, ggplot this time
 
 [Getting started with R Markdown](https://rmarkdown.rstudio.com/lesson-1.html) - [R Markdown cheatsheet](https://rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)
+- Helpful resources for getting started on R Markdown
 
 **Lab Notes**
 
