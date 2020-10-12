@@ -447,3 +447,13 @@ ggplot(pres_df, aes(x = year_month, y = approve)) +
   xlab('Time')
 ```
 
+We can add some other options that are helpful to visualize the presidential data.
+For example, we can add a vertical line to indicate the time of 9.11 on our graph to see the change of the approval rate after the event. 
+
+```{r}
+ggplot(pres_df, aes(x = year_month, y = approve)) +
+  geom_line(show.legend = TRUE) +
+  ggtitle('Presidential Approval Rating') +
+  xlab('Time')  +
+  geom_vline(xintercept =	as.POSIXct("2001-09-01"), col="red")
+```
