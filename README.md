@@ -22,6 +22,10 @@ Some Useful Resources:
 [Getting started with R Markdown](https://rmarkdown.rstudio.com/lesson-1.html) - [R Markdown cheatsheet](https://rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)
 - Helpful resources for getting started on R Markdown
 
+[Compiling a R Markdown PDF in RStudio](https://yihui.org/tinytex/)
+- Follow the instructions from this link. I remember having a few issues installing it using these instructions but if you perservere I'm sure you can figure it out!
+
+
 **Lab Notes**
 
 **Homework 01**
