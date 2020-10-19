@@ -1,9 +1,6 @@
 ---
 Title: Lab 3
 output:
-  pdf_document:
-    toc: yes
-    toc_depth: '4'
   html_document:
     highlight: haddock
     keep_md: yes
@@ -11,6 +8,9 @@ output:
     toc: yes
     toc_depth: 4
     toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '4'
 ---
 
 ```{r setup, include=FALSE}
@@ -19,56 +19,72 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Homework Review
 
-Hi guys! Welcome to week three. This week, we're going to review some materials on homework 1 that were quite tricky. In particualr regarding number 3, how to derive z-stat/t-stat and how to interpret the interaction term in a regression result. 
+Hi guys! Welcome to week three. This week, we're going to review some materials on homework 1 that were quite tricky. In particular regarding number 3, how to derive z-stat/t-stat and how to interpret the interaction term in a regression result. 
 
-We're going to quickly go ahead and do the follwing; 
- - loading packages, 
- - go over some group statistics,
- - running regressions (with a twist),
- - And doing some analysis/thinking on those things. 
+We're going to quickly go ahead and do the following; 
+ - Installing and loading new packages 
+ - Learn a new tidyverse command: 'group_by()'
+ - Practice running regressions (with a twist)
+ - Do some analysis 
 
 ## Basic Setup
 
-First, we do some basic set up;
-  - install the relevant packages (if you have not done so already), 
-  - load the relevent package, 
-  - and import .csv file on r setting. 
+First, to setup for today's lab we will be using the same data from problem set 1
+
+  
 ```{r}
-#to load pacman to our workspace, we need to use the core R library command.
+# Loading packages
 library(pacman)
+
+# If you have not already, install the following package: "magrittr"
+# install.packages("magrittr", dependencies = TRUE)
+
+# Load the necessary packages
 p_load(tidyverse, broom, magrittr)
-install.packages(c("tidyverse","magrittr"), dependencies = TRUE)
-library(tidyverse,magrittr)
-#let's store a character object that contains our path so we can load our data. 
-#We could simply pass "/Users/connor/Dropbox/EC421_Lab/Week3/data/dataPS01.csv" but this looks cleaner IMO
-my_path = "C:/Users/boyoon/Dropbox/EC421/ps1/PS1_Data.csv"
-dataPS01 <- read_csv(my_path)
+
+# Set working directory
+setwd('C:/Users/Ajdic/OneDrive - University Of Oregon/GE/EC 421 - Q12020/lab_03')
+
+# Load our data 
+my_path = "./data/ps01_data.csv"
+df <- read_csv(my_path)
 ```
 
-## Group Statistics
+## Group_by()
 
-Second, we do calculation on group statistics. 
-Often, we want stats on subsets of the data. Maybe one group is seeing odd callback counts. Let's dive in! 
-How do we figure out what is the mean callback rate for females?
-R has a TON of ways to do this. Let's start with the massive tidyverse approach!
+Often, we want stats on subsets of the data. the 'group_by()' function allows us to subset our dataframes into smaller samples. This gives us more flexibility in our analysis.
+
+For example:
+
+Let's say we want to look at mean callback rates for four samples: white males, white females, black males, and black females. One way we can do this is by using the filter command
 
 ```{r}
-#remember: R doesn't care about vertical space. So we can be greedy if it makes stuff look better.
+df %>% filter(i_female == 0, race == 'w') %>% summarize(mean(i_callback))
+df %>% filter(i_female == 1, race == 'w') %>% summarize(mean(i_callback))
+df %>% filter(i_female == 0, race == 'b') %>% summarize(mean(i_callback))
+df %>% filter(i_female == 1, race == 'b') %>% summarize(mean(i_callback))
 
-#starting a new line after an =, or a comma, or a tidyverse pipe %>% won't change how R interprets your code. Let's create a new dataframe with some summary statistics in it
-female_stats = 
-  dataPS01 %>% 
-  #group_by() takes a variable from your dataframe and then will perform summary statistics 
-  #at that 'level' see the output to see what I mean. Group_by can take any number of variables.
-  group_by(sex) %>%
-  #summarise sort of works like mutate, but gathers data based on the group_by label above and returns summary statistics
-  summarise(
+
+```
+
+However, there is an easier way to do this using group_by(). It will be a much more convenient function than filter. You will see why below
+
+```{r}
+df %>% group_by(race, i_female) %>% summarize(mean(i_callback))
+```
+
+How neat. We just found what we were looking for using one line of code. Imagine how much simpler group_by() will make some more complex tasks compared to just filter() alone. 
+
+*Note: R doesn't care about vertical space.*
+
+```{r}
+female_stats <- df %>%
+  group_by(i_female, race) %>%
+  summarize(
     total_callback= sum(i_callback),
     callback_mean= mean(i_callback),
     callback_sd = sd(i_callback)
   )
-
-#let's output that dataframe we just made
 
 female_stats
 ```
@@ -76,13 +92,13 @@ female_stats
 Now, we have a NEW tibble, with some information on our two groups. Handy right? 
 What does the 'mean' column mean in this context? Think about what we've been doing so far.
 
- 
+
 Another way to do the same thing is to subset based on sex, using the `subset()` command.
 
 ```{r}
 #this will create two dataframes, one where there are only males, and one with only females
-m=subset(dataPS01, sex=="m")
-f= subset(dataPS01, sex=="f")
+m <- subset(df, sex=="m")
+f <- subset(df, sex=="f")
 ```
 
 MID LAB EXCERCISE BREAKDOWN!!!!
@@ -96,7 +112,7 @@ sd(f$i_callback)
 nrow(f[f$i_callback == 1,])
 ```
 
-## Difference in two groups. No regression
+## Group Differences
 Now let's conduct a statistical test for the difference in the two groups' average callback rates. What are our hypotheses?
 
 H0: The difference is zero. H1: The difference is not zero
@@ -104,11 +120,20 @@ One way to do this (by hand) is to calculate all of the means and SD and then pl
 
 ```{r}
 #counting the number of black/white observations
-num.b <- nrow(filter(dataPS01, race == "b"))
-num.w <- nrow(filter(dataPS01, race == "w"))
+num_b <- df %>% filter(race == 'b') %>% nrow()
+num_w <- df %>% filter(race == 'w') %>% nrow()
+
+num_b
+num_w
+
 #calculating the standard deviation for black names/white names only
-sd.b <- sd(filter(dataPS01, race == "b")$i_callback)
-sd.w <- sd(filter(dataPS01, race == "w")$i_callback)
+sd_b <- df %>% filter(race == 'b') %>% summarize(sd(i_callback)) %>% unlist()
+sd_w <- df %>% filter(race == 'w') %>% summarize(sd(i_callback)) %>% unlist()
+
+sd_b
+sd_w
+
+# Note: the 'unlist()' command strips values from there structure. For example, it will turn lists into vectors. I use this command a lot but not something worth teaching to much
 ```
 
 Remember your stats classes? We will need to plug these into a formula that looks like:
@@ -118,17 +143,16 @@ Remember your stats classes? We will need to plug these into a formula that look
 We need means of callback by group next:
 
 ```{r}
-mean_all <- mean(dataPS01$i_callback)
-#remember, we are looking for percent callback rates based on race. So we need to filter, and then call the variable of
-#interest on our resulting dataframe. Let's do that:
-perc.callback.b <- mean(filter(dataPS01, race == "b")$i_callback)
-perc.callback.w <- mean(filter(dataPS01, race == "w")$i_callback)
+mean_all <- mean(df$i_callback)
+
+perc_callback_b <- mean(filter(df, race == "b")$i_callback)
+perc_callback_w <- mean(filter(df, race == "w")$i_callback)
 ```
 
 Plugging in our declared variables:
 
 ```{r}
-t <- (perc.callback.b - perc.callback.w) / sqrt(sd.b ^ 2 / num.b + sd.w ^ 2 / num.w)
+t <- (perc_callback_b - perc_callback_w) / sqrt(sd_b ^ 2 / num_b + sd_w ^ 2 / num_w)
 t
 ```
 
@@ -138,53 +162,55 @@ We can do this with a z-test too!
 
 The formula for this one is:
 ```{r}
-z.stat = (perc.callback.b - perc.callback.w)/sqrt(mean_all*(1-mean_all)*(1/num.b + 1/num.w))
-2*pnorm(abs(z.stat), lower.tail = F)
+z_stat = (perc_callback_b - perc_callback_w)/sqrt(mean_all*(1-mean_all)*(1/num_b + 1/num_w))
+2*pnorm(abs(z_stat), lower.tail = F)
 ```
 
 This gives us a p-value for our test. Remember, the e-05 is important to consider.
 
-## Practice regressions, part two
-  
+## Group Differences: Regressions
+
 Let's do something suspiciously close to your problem 3.
 
 First let's regress i_callback on i_black.
 
-To be clear, our estimating equation is: $$callback_i = B0 + B1*black_i + e_i $$
+To be clear, our estimating equation is: 
+
+$callback_i = \beta_0 + \beta_1*black_i + \varepsilon_i$
 
 This type of model is called a linear probability model. Why would we call it that? What are our coefficients measuring if callback_i is just a 0-1 indicator for getting a callback?
 
 Let's estimate the equation! Maybe that will help.
 ```{r}
-call_f_model = lm(i_callback~i_black,data=dataPS01)
+call_f_model = lm(i_callback~i_black,data=df)
 summary(call_f_model)
 ```
 
 Nice! Ok. So what do we have here? What do we do now. How would we interpret these coefficients.
 
-## Interpretation.
+## Interpretation
 
 Any thoughts on the last regression?
 
-Specifically: how do we interpret $B1$? $B0$?
+Specifically: how do we interpret $\beta_1$? $\beta_0$?
 
 **Hint: think about the "reference group" What are we really measuring here? What group will be affected by ONLY the intercept**
- 
+
 What do you (can you) conclude from the coefficient on female not being significant?
-  
-## Regression with Interaction terms
-  
+
+### Regression with Interaction terms
+
 Now our goal is to estimate the following equation:
-  
-callback_i = a0+a1*exp_i+a2*black_i+a3*exp_i*black_i+e_i
+
+$callback_i = \alpha_0 + \alpha_1 * exp_i + \alpha_2 * black_i + \alpha_3 * exp_i * black_i + \varepsilon_i$
 
 ```{r}
 # Note where the : shows up between female and black at the end
-interaction_reg= lm(i_callback ~ n_expr+i_black+n_expr:i_black, data=dataPS01)
+interaction_reg <- lm(i_callback ~ n_expr + i_black + n_expr:i_black, data=df)
 summary(interaction_reg)
 ```
 
-  
+
 What are these variables doing there?? What are our new coefficients doing to our interpretations?
 
 How would we interpret a0? What about a3?
@@ -195,38 +221,45 @@ In this case, a0 = white applicants with zero experience. We have two independen
  - white with experience
  - black with no experience
  - black with experience 
- 
-For the first group (white with no experience) the estimating equation becomes 
- - callback_i = a0+e_i
- - a0 will indicate the callback rate of our reference group, in this case white with no experience
+
+For the first group (white with no experience) the estimating equation becomes
+
+$$callback_i = \alpha_0 + \varepsilon_i$$
+
+$\alpha_0$ will indicate the callback rate of our reference group, in this case white with no experience.
+
 For the second group (white with experience) the estimating equation becomes
- - callback_i = a0+a1*exp_i+e_i
- - notice that terms that include i_black are removed in this equation
+
+$$callback_i = \alpha_0 + \alpha_1*exp_i+ \varepsilon_i$$
+
+notice that terms that include i_black are removed in this equation
+
 For the third group (black with no experience) the estimating equation becomes
- - callback_i = (a0+a2)+e_i
+ 
+$$callback_i = (\alpha_0 + \alpha_2)+ \varepsilon_i$$
+
 For the fourth group (black with experience) the estimating equation becomes
- - callback_i = (a0+a2)+(a1+a3)*exp_i+e_i
+
+$$callback_i = (\alpha_0 + \alpha_2)+(a1+a3)*exp_i+ \varepsilon_i$$
 
 Notice that we are differing intercept and slope for each of the group to measure more precise of the race and experience on call back rate. 
 
-So what does the interaction term (a3) mean? It means that a3 indicates whether the effect of experience on the callback rate differed between black and white résumés. As you have already shown, in the regression that we did in our problem set 1, we do not see a statistical significance of the estimate of a3, which implies that the effect of experience on call back rate wouldn't be so different between black and white resumes. 
- 
-# Heteroskedasticity 
+So what does the interaction term $\alpha_3$ mean? It means that a3 indicates whether the effect of experience on the callback rate differed between black and white résumés. As you have already shown, in the regression that we did in our problem set 1, we do not see a statistical significance of the estimate of a3, which implies that the effect of experience on call back rate wouldn't be so different between black and white resumes. 
+
+## Heteroskedasticity 
 
 Today, we will be working through some heteroskedasticity examples. 
 
 In order to do that though, we need two things: some data and our handy dandy pacman package. We'll be using the `Caschool` data from `Ecdat` to look at some fun data.
 
-## Lesson 0: loading data and packages
+### Lesson 0: loading data and packages
 
 First, let's load pacman. If you need to, run `install.packages("pacman")` first. If you run into errors, run
 `library(Ecdat,ggplot2)` to get around pacman install concerns. For everybody else,
 
 ```{r, packages}
-library(pacman)
 #install.packages("Ecdat") if necessary
 p_load(Ecdat, tidyverse, ggplot2, sandwich, lmtest)
-#Let's explore our dataset, Caschool
 ```
 
 The `Ecdat` contains the `Caschool` dataset which features all sorts of fun heterokedasticity we can look at.
@@ -234,7 +267,7 @@ The `Ecdat` contains the `Caschool` dataset which features all sorts of fun hete
 Let's do some exploration on our own. How do we inspect something? We can ask R using the `?` key
 
 ```{r}
-?Caschool
+# ?Caschool
 ```
 
 We're going to start with some exploration on our own.
@@ -248,14 +281,27 @@ Let's take a peak at the first few rows of the dataset. How do we do this?
 ```{r}
 #Let's pass in our caschool data to a head command
 head(Caschool)
+
+# Also lets assign the data to a shorter object name :) cuz im lazy
+
+cas <- Caschool
 ```
 
 
-Question 2: What is the range of school size?
-Question 3: What is the range of district average income ?
-Question 4: What is the range of student to teacher ratio?
-Question 5: What is the range of enrollment?
-Question 6: What variables do we have to use to measure student outcomes?
+
+Question 1: What is the range of school size?
+
+Question 2: What is the range of district average income ?
+
+Question 3: What is the range of student to teacher ratio?
+
+Question 4: What is the range of enrollment?
+
+Question 5: What variables do we have to use to measure student outcomes?
+
+
+&nbsp; 
+
 
 I think using some function of our test scores would work well.
 
@@ -264,22 +310,19 @@ Let's try to figure out what the range of the total average score (reading + mat
 We'll use some tools from our friendly neighborhood tidyverse to solve this. Remember our mutate command? We'll be using that.
 
 ```{r}
-#We need the tidyverse, so if you haven't already, run the following:
-#p_load(tidyverse)
-
-#Generate total scores by adding reading and math scores together.
-Caschool <- mutate(Caschool, scrtot = readscr + mathscr)
+# Generate total scores by adding reading and math scores together.
+cas <-  cas %>% mutate(scrtot = readscr + mathscr)
 ```
 
 
 Now, we need to do some analysis. Back to regressions.
 
-## Lesson 1: Running Regressions! Again!
+### Lesson 1: Running Regressions! Again!
 
 Let's run the linear regression of total score on income, student-to-teacher ratio, enrollment and expenditures per student. First, let's explore a little.
 
 ```{r}
-ols1 <- lm(data = Caschool, scrtot ~ avginc + str + enrltot + expnstu)
+ols1 <- lm(data = cas, scrtot ~ avginc + str + enrltot + expnstu)
 summary(ols1)
 ```
 
@@ -287,30 +330,30 @@ On your own, interpret coefficients. In particular, think about the coefficient 
 
 Ok, now we need to find a way to examine heteroskedasticity. The first step in doing that is to recover errors, which we have to figure out. Let's do that.
 
-## Lesson 2: Retrieving Residuals from an LM model
+### Lesson 2: Retrieving Residuals from an LM model
 Create the residuals of the regression you just ran. Hint: you can use the mutate command, combined with
 the `resid(your_lm_model)` command. This will return a vector of residuals! This is super handy, especially for this section. Let's create a new column in our dataframe with our errors.
 
 ```{r}
-Caschool <- mutate(Caschool, resid1 = resid(ols1))
+cas <- cas %>% mutate(resid1 = resid(ols1))
 ```
 
 However, we know this is the heteroskedasticity lab, so we need to check for heteroskedasticity. How would we do this?
 
-Plot residuals against each of the four explanatory variables!
+Plot residuals against each of the four explanatory variables! Let's use our qplot command to graph our X variables against our residuals to see if they seem reasonable. Think a bit about
 
 ```{r}
-#Let's use our qplot command to graph our X variables against our residuals to see if they seem reasonable. Think a bit about
-#what 'reasonable' means.
+# average income
+qplot(cas$avginc, cas$resid1)
 
-#Average income
-qplot(Caschool$avginc, Caschool$resid1)
-#student teacher ratio
-qplot(Caschool$str, Caschool$resid1)
-#enrollment total
-qplot(Caschool$enrltot, Caschool$resid1)
-#expenditures per student
-qplot(Caschool$expnstu, Caschool$resid1)
+# student teacher ratio
+qplot(cas$str, cas$resid1)
+
+# enrollment total
+qplot(cas$enrltot, cas$resid1)
+
+# expenditures per student
+qplot(cas$expnstu, cas$resid1)
 ```
 
 
@@ -320,14 +363,13 @@ Does it appear as though our disturbances are heteroskedastic? explain.
 Why do we care about heteroskedasticity? What issues does that cause with our assumptions about OLS?
 
 
-Let's Run a similar regression but this time let's use some common transformation techiniques. Why do we want to do this?
+Let's run a similar regression but this time let's use some common transformation techniques. Why do we want to do this?
 
 The reason why we want to first try model specifications is because model mispecification itself can cause heteroskedascity. Why do log-type heteroskedasticities help us sometimes?
 
 Let's start with a log-linear specification. How would we go about this?
 ```{r}
-#Let's run a regression with  the form log(y) = x1 + x2 + ...
-lm_i <- lm(data = Caschool, log(scrtot) ~ avginc + str + enrltot + expnstu)
+lm_i <- lm(data = cas, log(scrtot) ~ avginc + str + enrltot + expnstu)
 ```
 
 
@@ -335,28 +377,27 @@ Now, we can use our quick-plot tool to examine our new residuals
 
 
 ```{r}
-qplot(Caschool$avginc, resid(lm_i))
-qplot(Caschool$str, resid(lm_i))
-qplot(Caschool$enrltot, resid(lm_i))
-qplot(Caschool$expnstu, resid(lm_i))
+qplot(cas$avginc, resid(lm_i))
+qplot(cas$str, resid(lm_i))
+qplot(cas$enrltot, resid(lm_i))
+qplot(cas$expnstu, resid(lm_i))
 ```
 
  Next, let's do a log-log specification
 ```{r}
-#our form is now log(Y) = log(X1) + log(X2)...
-lm_ii <- lm(data = Caschool, log(scrtot) ~ log(avginc) + log(str) + log(enrltot) + log(expnstu))
+lm_ii <- lm(data = cas, log(scrtot) ~ log(avginc) + log(str) + log(enrltot) + log(expnstu))
 ```
- 
-qplot again
+
+'qplot()' again
 ```{r}
-qplot(log(Caschool$avginc), resid(lm_ii))
-qplot(log(Caschool$str), resid(lm_ii))
-qplot(log(Caschool$enrltot), resid(lm_ii))
-qplot(log(Caschool$expnstu), resid(lm_ii))
+qplot(log(cas$avginc), resid(lm_ii))
+qplot(log(cas$str), resid(lm_ii))
+qplot(log(cas$enrltot), resid(lm_ii))
+qplot(log(cas$expnstu), resid(lm_ii))
 ```
 
 ```{r}
-lm_checker <- lm(data = Caschool, (resid(lm_ii)^2) ~ log(avginc) + log(str) + log(enrltot))
+lm_checker <- lm(data = cas, (resid(lm_ii)^2) ~ log(avginc) + log(str) + log(enrltot))
 summary(lm_checker)$r.squared
 ```
 
@@ -366,29 +407,29 @@ That's a bit hard to interpret. We might be okay here. But let's keep looking. (
 *How about lin-log?*
 ```{r}
 #y = log(x1)+ log(x2)...
-lm_iii <- lm(data = Caschool, scrtot ~ log(avginc) + log(str) + log(enrltot))
+lm_iii <- lm(data = cas, scrtot ~ log(avginc) + log(str) + log(enrltot))
 ```
 
 ```{r}
-qplot(log(Caschool$avginc), resid(lm_iii))
-qplot(log(Caschool$str), resid(lm_iii))
-qplot(log(Caschool$enrltot), resid(lm_iii))
-qplot(log(Caschool$enrltot), resid(lm_iii))
+qplot(log(cas$avginc), resid(lm_iii))
+qplot(log(cas$str), resid(lm_iii))
+qplot(log(cas$enrltot), resid(lm_iii))
+qplot(log(cas$enrltot), resid(lm_iii))
 ```
 
 
  Maybe interaction terms will help us...
 ```{r}
-lm_iv <- lm(data = Caschool, scrtot ~ avginc + str + enrltot + expnstu + avginc:str + avginc:enrltot + avginc:expnstu + str:enrltot + str:expnstu + enrltot:expnstu)
+lm_iv <- lm(data = cas, scrtot ~ avginc + str + enrltot + expnstu + avginc:str + avginc:enrltot + avginc:expnstu + str:enrltot + str:expnstu + enrltot:expnstu)
 ```
- 
+
 Ok, let's look at our errors
 
 ```{r}
-qplot(Caschool$avginc, resid(lm_iv))
-qplot(Caschool$str, resid(lm_iv))
-qplot(Caschool$enrltot, resid(lm_iv))
-qplot(Caschool$expnstu, resid(lm_iv))
+qplot(cas$avginc, resid(lm_iv))
+qplot(cas$str, resid(lm_iv))
+qplot(cas$enrltot, resid(lm_iv))
+qplot(cas$expnstu, resid(lm_iv))
 ```
 
 
@@ -396,22 +437,22 @@ qplot(Caschool$expnstu, resid(lm_iv))
 v) Okay. Maybe we really need quadratic terms. We'll keep our interactions.
 
 ```{r}
-lm_v <- lm(data = Caschool, scrtot ~ avginc + str + enrltot + expnstu + avginc:str + avginc:enrltot + avginc:expnstu + str:enrltot + str:expnstu + enrltot:expnstu + avginc ^ 2 + str ^ 2 + enrltot ^ 2 + expnstu^2)
+lm_v <- lm(data = cas, scrtot ~ avginc + str + enrltot + expnstu + avginc:str + avginc:enrltot + avginc:expnstu + str:enrltot + str:expnstu + enrltot:expnstu + avginc ^ 2 + str ^ 2 + enrltot ^ 2 + expnstu^2)
 ```
 
 
 ```{r}
-qplot(Caschool$avginc, resid(lm_v))
-qplot(Caschool$str, resid(lm_v))
-qplot(Caschool$enrltot, resid(lm_v))
-qplot(Caschool$expnstu, resid(lm_v))
+qplot(cas$avginc, resid(lm_v))
+qplot(cas$str, resid(lm_v))
+qplot(cas$enrltot, resid(lm_v))
+qplot(cas$expnstu, resid(lm_v))
 ```
 
 
 
 Shoot. Okay, what can we do from here on out? We need tests. Tests with funny names....
 
-## Lesson 3:Goldfeld-Quant test!
+### Lesson 3:Goldfeld-Quant test!
 
 Ok. Before we start down this path, let's try to figure out what exactly we need to look for in a heteroskedasticity test. What exactly are we testing for here? We want to be **sure** that our variance isn't changing with our predictors. Well, what's one way of checking that? How can we do this? 
 
@@ -423,25 +464,27 @@ What we need to do: compare the variances of first 3/8 and the last 3/8 ranked b
 
 This looks at the ratio and sees how far it is from 1. Think about it. If the ratio is 1, then across large ans small values of your variable of interest, your errors is roughly the same.
 
-Note that Goldfeld-Quant only allows you to look at one varibale at a time. Let's focus on income at the moment
+Note that Goldfeld-Quant only allows you to look at one variable at a time. Let's focus on income at the moment
 
 
 If we wanted to do this by hand, we'd need to follow some steps. 6 steps in total.
 
 **1.)** Order your observations by your variable of interest, in this case, let's do income. It looked the worst in our graphs, so it makes sense to check here.
 
+In order to order a variable, all we need to do is sort it, using the 'arrange()' command.
+
 ```{r}
-#in order to order a variable, all we need to do is sort it, using the arrange command.
-Caschool <- arrange(Caschool, avginc)
-head(Caschool$avginc)
+cas <- arrange(cas, avginc)
+head(cas$avginc)
 ```
 
 we can see `avginc` is increasing
 
 **2.)** Split the data into two groups, in appropriate sizes. We've chosen to be three-eighths to be our sample size. We need to know what 3/8 of our dataset is.
+
 ```{r}
-as.integer(nrow(Caschool) * 3/ 8) #this will give a number slightly less than version 2
-n_GQ <- (nrow(Caschool)%/%8) * 3
+as.integer(nrow(cas) * 3/ 8) #this will give a number slightly less than version 2
+n_GQ <- (nrow(cas)%/%8) * 3
 n_GQ #this will give us the closest count that gives us the number that is 3/8 of our full sample!
 ```
 
@@ -449,9 +492,9 @@ n_GQ #this will give us the closest count that gives us the number that is 3/8 o
 
 ```{r}
 #on the last 3/8
-lm_g1 <- lm(data = tail(Caschool, n_GQ), scrtot ~ avginc + str + enrltot + expnstu) #using the tail command, we are running the reg
+lm_g1 <- lm(data = tail(cas, n_GQ), scrtot ~ avginc + str + enrltot + expnstu) #using the tail command, we are running the reg
 #on the first 3/8
-lm_g2 <- lm(data = head(Caschool, n_GQ), scrtot ~ avginc + str + enrltot + expnstu) #using head, we are doing the above on the first ones
+lm_g2 <- lm(data = head(cas, n_GQ), scrtot ~ avginc + str + enrltot + expnstu) #using head, we are doing the above on the first ones
 ```
 
 **4.)** Record our sum of square errors to test
@@ -491,13 +534,13 @@ Conclusion, can we reject H0?
 
 Yes! At the 5% significance level. Let's look at another test.
 
-## Lesson 4: Breusch-Pagan test:
+### Lesson 4: Breusch-Pagan test:
 
 Again, we need to follow some steps to run this test. How do we go about this? Another six steps!!
 
 **1.)** Regress y (scrtot) on an intercept, x1 (avginc), x2 (str), ... xk (expnstu)
 ```{r}
-lm_frst <- lm(data = Caschool, scrtot ~ avginc + str + enrltot + expnstu)
+lm_frst <- lm(data = cas, scrtot ~ avginc + str + enrltot + expnstu)
 ```
 
 **2.)** Recover residuals from our original regression
@@ -509,7 +552,7 @@ e_BP <- resid(lm_frst) #use the resid() command again
 
 **3.)** Regress our squared errors (e^2) on an intercept, x1, x2, ... xk, or our explanatory variables.
 ```{r}
-lm_BrPa <- lm(data = Caschool, e_BP ^ 2 ~ avginc + str + enrltot + expnstu)
+lm_BrPa <- lm(data = cas, e_BP ^ 2 ~ avginc + str + enrltot + expnstu)
 ```
 
 **4.)** Record R^2
@@ -523,7 +566,7 @@ r2_BP <- summary(lm_BrPa)$r.squared #this is letting us get r squared!
 **5.)** Compute the Bruesch-Pagan statisic (called Langrange Multiplier) and the P-value
 
 ```{r}
-LM_BP <- nrow(Caschool) * r2_BP
+LM_BP <- nrow(cas) * r2_BP
 pchisq(q = LM_BP, df = 4, lower.tail = F) #this function calculates a chi-squared distribution
 ```
 
@@ -538,7 +581,7 @@ If you're wondering why we used 4 degrees of freedom (df in above function is eq
 
 We reject the null hypothesis with 5% significance level. We have one more test to walk through.
 
-## Lesson 5: White test
+### Lesson 5: White test
 The white test is very similar to the Breusch-Pagan test, with a few modifications:
 
 When regressing the squared errors in the B-P test, in addition to the original regressors, we add interaction terms and squared terms. 
@@ -549,7 +592,7 @@ So the first two steps of the White test are identical to those in the Breusch-P
 **1.)** Regress y (scrtot) on an intercept, x1 (avginc), x2 (str), ... xk (expnstu). Same as BP
 
 ```{r}
-lm_first <- lm(data = Caschool, scrtot ~ avginc + str + enrltot + expnstu)
+lm_first <- lm(data = cas, scrtot ~ avginc + str + enrltot + expnstu)
 ```
 
 **2.)** Record residuals from our reg. Also, same as BP
@@ -561,7 +604,7 @@ e_WhiteTest <- resid(lm_first)
 **3.)** 
 Regress e^2 on an intercept, x1, x2, ... xk AND THE INTEREACTION AND SQUARED TERMS. This is where we go off the BP script
 ```{r}
-lm_White <- lm(data = Caschool, e_BP ^ 2 ~ avginc + str + enrltot + expnstu + avginc:str + avginc:enrltot + avginc:expnstu + str:enrltot + str:expnstu + enrltot:expnstu + avginc ^ 2 + str ^ 2 + enrltot ^ 2 + expnstu^2)
+lm_White <- lm(data = cas, e_BP ^ 2 ~ avginc + str + enrltot + expnstu + avginc:str + avginc:enrltot + avginc:expnstu + str:enrltot + str:expnstu + enrltot:expnstu + avginc ^ 2 + str ^ 2 + enrltot ^ 2 + expnstu^2)
 ```
 
 
@@ -572,13 +615,13 @@ r2_White <- summary(lm_White)$r.squared
 
 **5.)** Compute the Bruesch-Pagan statisic (called Langrange Multiplier)
 ```{r}
-LM_White <- nrow(Caschool) * r2_White 
+LM_White <- nrow(cas) * r2_White 
 pchisq(q = LM_White, df = 9, lower.tail = F) #this is a chi-squared function. Takes value, outputs probability.
 ```
 
 So what can we say? What is our H0? What is HA?
 
-# Lesson 6: What next?
+### Lesson 6: What next?
 
 How do we fix our problem? We have some serious het problems. We could use a specification, but sometimes those don't work, so we have to turn to heteroskedasticity robust standard errors.
 
@@ -588,11 +631,10 @@ How do we fix our problem? We have some serious het problems. We could use a spe
 
 ```{r}
 #first let's remind ourselves what our coefs and SE look like
-lm_orig <- lm(data = Caschool, scrtot ~ avginc + str + enrltot + expnstu)
+lm_orig <- lm(data = cas, scrtot ~ avginc + str + enrltot + expnstu)
 summary(lm_orig)
-
 #Now let's look at our HR standard errors. Notice a difference?
-lm_lets_correct <- lm(data = Caschool, scrtot ~ avginc + str + enrltot + expnstu)
+lm_lets_correct <- lm(data = cas, scrtot ~ avginc + str + enrltot + expnstu)
 #This command let's us pass a NEW variance-covariance matrix that is robust to heteroskedasticity. The vcovHC command
 #lets us build a new matrix using a heteroskedasticity correcting method. You have options HC0-5, 
 #but Stata generally uses HC1. In general, they all do the job. 
@@ -603,5 +645,4 @@ In particular, look at how different the std errors are for avg income. Why did 
 Awesome! We just did some heteroskedasticity. Good job! 
 
 This lab was a lot but it'll be useful for you later. Enjoy your weekend, and I will see you guys next week.
-
 
