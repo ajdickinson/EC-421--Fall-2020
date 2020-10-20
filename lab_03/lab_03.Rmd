@@ -508,7 +508,7 @@ sse_g2 <- sum(e_g2 ^ 2)
 ```
 
 **5.)** Calculate the G-Q test stastistic, and compute the p-value.
-How do we do this? Stop for a second and look at Ed's notes. What kind of test is the GQ test?
+How do we do this? Stop for a second and look at Luciana's notes. What kind of test is the GQ test?
 ```{r}
 stat_GQ <- (sse_g2 / sse_g1)
 stat_GQ
@@ -516,7 +516,7 @@ stat_GQ
 
 Great. So did you look up the test type? Good. We can use an F-test to produce a p-value for our calculated statistic.
 ```{r}
-p_GQ <- pf(q = stat_GQ, df1 = n_GQ, df2 = n_GQ, lower.tail = F) #pf gives probability from an f-dist.
+p_GQ <- pf(q = stat_GQ, df1 = n_GQ-5, df2 = n_GQ-5, lower.tail = F) #pf gives probability from an f-dist.
 p_GQ
 ```
 
@@ -616,7 +616,7 @@ r2_White <- summary(lm_White)$r.squared
 **5.)** Compute the Bruesch-Pagan statisic (called Langrange Multiplier)
 ```{r}
 LM_White <- nrow(cas) * r2_White 
-pchisq(q = LM_White, df = 9, lower.tail = F) #this is a chi-squared function. Takes value, outputs probability.
+pchisq(q = LM_White, df = 14, lower.tail = F) #this is a chi-squared function. Takes value, outputs probability.
 ```
 
 So what can we say? What is our H0? What is HA?
