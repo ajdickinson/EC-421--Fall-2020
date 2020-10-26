@@ -40,6 +40,8 @@ Some Useful Resources:
 **Lab 03**: [Learning R: Review Homework 1, Preview Homework 2 - Heteroskedasticity](https://github.com/ajdickinson/EC-421--Fall-2020/blob/main/lab_03/lab_03.md), [Alternative - link 2](https://rpubs.com/adick/677581)
 - Group_by(), z-stats, heteroskedasticity, plotting residuals
 
+**Lab 04**: [Learning R: Functions and Loops](https://github.com/ajdickinson/EC-421--Fall-2020/blob/main/lab_04/lab04.md) [Alternative Link](https://rpubs.com/adick/682043)
+- Functions, sapply(), for loops
 
 If you're adventurous, Grant McDermott's data science for economists is an amazing resource. It's designed for PhD students, but not those with any experience with computers. If metrics is your calling, you might enjoy looking at these.
 
