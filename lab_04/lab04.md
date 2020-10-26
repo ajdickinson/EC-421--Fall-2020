@@ -1,7 +1,7 @@
 ---
 title: "Lab 04, Fall 2020"
 author: "Your Friendly GEs!"
-date: "10/5/2020"
+date: "October 26, 2020"
 output:
   html_document:
     df_print: paged
@@ -24,12 +24,15 @@ output:
 Welcome back! Today, we're going to learn about functions. These notes are in depth to be sure everyone can learn these skills no matter where you are in your understanding.
 
 Let's start our lecture as we always do: load some packages. Packages, as you'll recall, are functions someone has written for R. For us today, we'll be working with...
-- ggplot2 to make amazing data visualizations, 
+
 - tidyverse to help manipulate data, 
 - magrittr, which helps us tidy up code, and 
- -pacman which makes managing all of these packages so much simpler.
+- pacman which makes managing all of these packages so much simpler.
+- ggplot to make some awesome visuals (tune in for a more detailed ggplot lesson next week)
 
 ## Lesson 00: Packages
+
+Fire these suckers up
 
 
 ```r
@@ -43,6 +46,7 @@ Before we talk about functions in R, we should first make sure we understand wha
 You all are probably used to thinking of something like:
   
 But what really does this even mean? Why is this a useful tool?
+
  - It takes some input (a number), and gives us an output (in this case, the squared number, which is indeed also a number). We can represent the function $f$ above as:
   
 - `Number -> ADifferentNumber` where that arrow is something we call a mapping. A mapping links one object to another. This doesn't *have* to be two numbers, it could be a word and a dataframe, or two words. For instance, I could come up with a function called `color labeler` and then pass it some object, which it will map to a color.
@@ -54,36 +58,35 @@ Knowing all of this, we need to go back to lecture 1 to remind ourselves about R
 - Everything in R has a `name`, and everything is an `object`
 - Functions have `inputs`/`arguments` and `outputs`
 
-With these in mind, let's write a function that will take some x, and spit out x^2 + 10. That is, let's write the code for f(x)=x^2+10.
+With these in mind, let's write a function that will take some $x$, and spit out $x^2 + 10$. That is, let's write the code for $f(x)=x^2+10$.
 
 **Everything in R needs a name** That includes our function.  
 We do this by starting with a name, setting it equal to a 'function()' function.
 
-In general, this function looks like `function([some_set_of_arguments]){your function code}`. Let's look at an example below.
+In general, this function looks like:
+
+`function([some_set_of_arguments]){your function code}`
+
+Let's look at an example below.
 
 
 
 ```r
-#function() is a special operator that takes any arguments you want in the parentheses, and then lets you manipulate
-#them in any way you see fit. Think of the parenthese here as the toys you're giving your computer to play with in
-#the sandbox.
+#function() is a special operator that takes any arguments you want in the parentheses, and then lets you manipulate them in any way you see fit. Think of the parentheses here as the toys you're giving your computer to play with in the sandbox.
+
 squarePlusten = function(x){
   
-  #tell squarePlusten what to do. x is an input here, we can tell our function to transform our variable into
-  #something else.
+  #tell squarePlusten what to do. x is an input here, we can tell our function to transform our variable into something else.
   
   x_squaredten = x^2+10
   
-  #Now, in order to make use of this value, we need our function to spit something out. 
-  #We do this with another special function, 'return()'. This will stop your function and tell it to spit out
-  #whatever object is in the parentheses. In a sense, it's the toy your computer gives back to the rest of your 
-  #workspace.
+  #Now, in order to make use of this value, we need our function to spit something out. We do this with another special function, 'return()'. This will stop your function and tell it to spit out whatever object is in the parentheses. In a sense, it's the toy your computer gives back to the rest of your workspace.
   
   return(x_squaredten)
 }
 ```
 
-notice however: x_squaredten *isn't equal to anything* now that our function has been run. That's because x_squaredten is only defined in the context of your written function.
+notice however: `x_squaredten` *isn't equal to anything* now that our function has been run. That's because `x_squaredten` is only defined in the context of your written function.
 
 Try running this, it won't work
 
@@ -96,6 +99,7 @@ Now, let's see what our function can do here.
 
 ```r
 #check for 10. should be 110
+
 squarePlusten(10)
 ```
 
@@ -122,31 +126,35 @@ We're going to need a new tool for this which I will get to.
 
 
 So, what should our code do?
+
  - Take a vector, say c(1,2,3)
  - Square each element of the vector. note that we will need a way to store these results. 
+ 
 Our first step is to figure out all of our moving parts. Here, we need some set of numbers. We can use vectors with the `c()` command!
 
 Lets store them in a vector called x: `x =  c(1,4,9)`
   
 Now, I want a function to return a plot with all of the (x,x^2 = y) pairs affiliated. We can use a special function called `sapply()` which lets us perform a function a whole bunch of times.
 
-`sapply()` is cool. This is how it works: `sapply(some_vector,function)` will take every element in the vector and apply your function to it. We can use this to run a function a whole ton of times all at once.
+`sapply()` is cool. The `sapply()` function takes list, vector or data frame as input and gives output in vector or matrix.
+
+This is how it works: `sapply(some_vector,function)` will take every element in the vector and apply your function to it. We can use this to run a function a whole ton of times all at once.
 
 
 We will use `sapply()`, which takes three arguments, an input, an argument to build a new set of values.
 
 
 ```r
-# Build a vector, as we discussed above
-x = c(1,4,9)
+x = c(1,4,9)                        # Build a vector, as we discussed above
 
-plot_sq = function(x){  #now we can use the `sapply()` function as discussed above.
+plot_sq = function(x){              # Now we can use the `sapply()` function as discussed above.
+  
   y = sapply(x, function(x) x^2)
-  #return the plot
-  return(plot(x=x,y=y))
+  
+  return(plot(x=x,y=y))             # Specify return() to be the plot
 }
 
-plot_sq(1:3)  #check that it works
+plot_sq(1:3)                        # Check that it works
 ```
 
 ![](lab04_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
@@ -164,6 +172,12 @@ the definition is actually hinted at in the name: the logical flow here is **'fo
 From wikipedia:
 
 *A for-loop has two parts: a header specifying the iteration, and a body which is executed once per iteration*
+
+How do I use for loops in everyday tasks? Let say I need to do some task that simple/tedious but I need to do it 1000 times. For example:
+
+*Let's say I want to find the average between each observation (row) and the two observations (rows) above and below   and save it to a new variable. One way I can do this is to manual code for each row and use Ctrl + C and Ctrl + V 1000 times. Or I can just write a loop that will iterate down all rows and do it in a fraction of the time.*
+
+Writing a loop will save you hours. They will be your best friend, this is an important thing to learn. Not just for R, but for all coding languages. However, they can be hard to write if you have never done it before.
 
 Here is an example of how to write a basic for loop:
 
@@ -184,7 +198,7 @@ x
 ```
 
 
-i is, for each loop, storing the value in your sequence (here, it's a number in `1:10`) then performing the operation you defined in the loop. Like a function, a for loop defines its "body" by setting the start point with a `{` and an end point with a `}` (<-- curly braces).
+`i` is, for each loop, storing the value in your sequence (here, it's a number in `1:10`) then performing the operation you defined in the loop. Like a function, a for loop defines its "body" by setting the start point with a `{` and an end point with a `}` (<-- curly braces).
 
 **Always make sure that you complete your curly braces!! Always makes sure in curly braces, the code is tabbed to the right!**
 
@@ -295,7 +309,10 @@ Great! But  that graph looked horrible. How should we spruce it up? Great questi
 
 
 
-## Lesson 04: Returning to Heteroskedasticity
+## Lesson 04: Returning to Heteroskedasticity 
+
+- Why do we need functions?
+- Why do we need loops?
 
 You don't have to code this, but I want to give you guys some intuition for part 1f on your problem set. In particular, what does an unbiased & inconsistent vs. biased and consistent estimator look like? Why would we want one or another?
 
@@ -326,7 +343,7 @@ head(df, 10)
 
 <div data-pagedtable="false">
   <script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["v1"],"name":[1],"type":["dbl"],"align":["right"]}],"data":[{"1":"-3.0202310","_rn_":"1"},{"1":"-3.8340855","_rn_":"2"},{"1":"0.8734738","_rn_":"3"},{"1":"-3.1322236","_rn_":"4"},{"1":"0.8963298","_rn_":"5"},{"1":"3.3779974","_rn_":"6"},{"1":"1.7002259","_rn_":"7"},{"1":"-2.0947341","_rn_":"8"},{"1":"0.3360098","_rn_":"9"},{"1":"1.4260332","_rn_":"10"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["v1"],"name":[1],"type":["dbl"],"align":["right"]}],"data":[{"1":"1.016464","_rn_":"1"},{"1":"4.321866","_rn_":"2"},{"1":"-1.373943","_rn_":"3"},{"1":"1.776310","_rn_":"4"},{"1":"-2.703223","_rn_":"5"},{"1":"2.816656","_rn_":"6"},{"1":"-3.063958","_rn_":"7"},{"1":"1.724239","_rn_":"8"},{"1":"3.369201","_rn_":"9"},{"1":"-3.112101","_rn_":"10"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 
