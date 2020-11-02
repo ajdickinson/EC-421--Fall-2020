@@ -43,6 +43,9 @@ Some Useful Resources:
 **Lab 04**: [Learning R: Functions and Loops](https://github.com/ajdickinson/EC-421--Fall-2020/blob/main/lab_04/lab04.md) [Alternative Link](https://rpubs.com/adick/682043)
 - Functions, sapply(), for loops
 
+**Lab 05**: [Learning R: Review Loops and Functions, ggplot2, for loop + function practice lesson](https://github.com/ajdickinson/EC-421--Fall-2020/blob/main/lab_05/lab_05.md)
+- Functions, Loops, ggplot, practice
+
 If you're adventurous, Grant McDermott's data science for economists is an amazing resource. It's designed for PhD students, but not those with any experience with computers. If metrics is your calling, you might enjoy looking at these.
 
 [Grant's Notes](https://github.com/uo-ec607/lectures)
