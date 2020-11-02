@@ -26,7 +26,7 @@ knitr::opts_chunk$set(echo = TRUE, cache = TRUE, dpi=300)
 
 *Note: This material on loops is an excerpt from Grant McDermott's Data science for economist course.*
 
-# Lesson 0: Graphing with ggplot2
+## Lesson 00: Graphing with ggplot2
 
 Before we get into ggplot, let’s talk about `plot()` which is R’s base plotting package. It does a fine job of plotting things, and is quite powerful, but ggplot is more user friendly and is definitely a resume booster if you can use it well. Many companies, researchers and journalists use ggplot to produce graphs for wide audiences. The best part? It’s totally free to use.
 
@@ -372,14 +372,14 @@ ggplot(aes(x = year, y = total), data = ufo_total) + geom_line() +
 Awesome! We seem to be getting a big spike in alien sightings sometime in the 90s and mid 2000s.
 
 
-# Lesson 1: Functions, loops continued
+## Lesson 01: Functions, loops continued
 
 ```{r, cache=F, message=F}
 if (!require("pacman")) install.packages("pacman")
 pacman::p_load(tidyverse)
 ```
 
-## Quick review
+#### Quick review
 
 We have already seen and used a multitude of functions in R. Some of these functions come pre-packaged with base R (e.g. `mean()`), while others are from external packages (e.g. `dplyr::filter()`). Regardless of where they come from, functions in R all adopt the same basic syntax:
 
@@ -484,7 +484,7 @@ square(12)
 ```
 
 
-### Specifying default argument values
+#### Specifying default argument values
 
 Another thing worth noting about R functions is that you can assign default argument values. You have already encountered some examples of this in action.^[E.g. Type `?rnorm` and see that it provides a default mean and standard deviation of 0 and 1, respectively.] We can add a default option to our own function pretty easily.
 ```{r square5}
@@ -507,11 +507,11 @@ We'll return the issue of specifying default values (and handling invalid inputs
 Before continuing, I want to highlight the fact that none of the intermediate objects that we created within the above functions (`x_sq`, `df`, etc.) have made their way into our global environment. Take a moment to confirm this for yourself by looking in the "Environment" pane of your RStudio session.
 
 
-## Iteration
+### Iteration
 
 The most important early programming skill to master is iteration. In particular, we want to write functions that can iterate --- or *map* --- over a set of inputs.^[Our focus today will only be on sequential iteration, but we'll return to parallel iteration in the lecture after next.] By far the most common way to iterate across different programming languages is *for* loops. Indeed, we already saw some examples of *for* loops back in the shell lecture (see [here](https://raw.githack.com/uo-ec607/lectures/master/03-shell/03-shell.html#95)). However, while R certainly accepts standard *for* loops, I'm going to advocate that you adopt what is known as a "functional programming" approach to writing loops. Let's dive into the reasons why and how these approaches differ.
 
-### Vectorisation
+#### Vectorisation
 
 The first question you need to ask is: "Do I need to iterate at all?" You may remember from a previous lecture that I spoke about R being *vectorised*. Which is to say that you can apply a function to every element of a vector at once, rather than one at a time. Let's demonstrate this property with our `square` function:
 ```{r vectorisation}
@@ -521,7 +521,7 @@ square(c(2, 4))
 
 So you may not need to worry about explicit iteration at all. That being said, there are certainly cases where you will need to worry about it. Let's explore with some simple examples (some of which are already vectorised) that provide a mental springboard for thinking about more complex cases.
 
-### *for* loops. Simple, but limited (and sometimes dangerous)
+#### *for* loops. Simple, but limited (and sometimes dangerous)
 
 In R, standard *for* loops take a pretty intuitive form. For example:
 
@@ -547,7 +547,7 @@ Unfortunately, basic *for* loops in R also come with some downsides. Historicall
 
 The concept of functional programming is arguably the most important thing you can take away from today's lecture. Thus, while it can certainly be applied to iteration, I'm going to cover it in its own section.
 
-### FP defined
+#### FP defined
 
 Here is [Hadley Wickham](http://adv-r.had.co.nz/Functional-programming.html) explaining the key idea:
 
@@ -573,7 +573,7 @@ FP allows to avoid the explicit use of loop constructs and its associated downsi
 
 Let's explore these in more depth.
 
-### lapply and co.
+#### lapply and co.
 
 Base R contains a very useful family of `*apply` functions. I won't go through all of these here --- see `?apply` or [this blog post](https://nsaunders.wordpress.com/2010/08/20/a-brief-introduction-to-apply-in-r/) among numerous excellent resources --- but they all follow a similar philosophy and syntax. The good news is that this syntax very closely mimics the syntax of basic for-loops. For example, consider the code below, which is analgous to our first *for* loop above, but now invokes a **`base::lapply()`** call instead. 
 
@@ -613,7 +613,7 @@ sapply(1:10, function(i) LETTERS[i])
 ```
 
 
-### Create and iterate over named functions
+#### Create and iterate over named functions
 
 As you may have guessed already, we can split the function and the iteration (and binding) into separate steps. This is generally a good idea, since you typically create (named) functions with the goal of reusing them. 
 
@@ -645,3 +645,111 @@ In the next two lectures, we'll dive into more advanced programming and function
 - If you're looking for an in-depth treatment, then I can highly recommend Hadley's [*<b>Advanced R</b>*](https://adv-r.hadley.nz) (2nd ed.) He provides a detailed yet readable overview of all the concepts that we touched on today, including more on his (and R's) philospohy regarding functional programming (see [Section ||](https://adv-r.hadley.nz/fp.html)). 
 - If you're in the market for a more concise overview of the different `*apply()` functions, then I recommend [this blog post](https://nsaunders.wordpress.com/2010/08/20/a-brief-introduction-to-apply-in-r/) by Neil Saunders.
 - On the other end of the scale, Jenny Bryan (all hail) has created a fairly epic [purrr tutorial](https://jennybc.github.io/purrr-tutorial) mini-website. (Bonus: She goes into more depth about working with lists and list columns.)
+
+
+## Practice Lesson: For Loops and Functions
+
+#### Question 1: Count the number of even integers in a vector
+
+Note: All the following code is commented out so that R markdown will compile!! First highlight the comment-out code, use hotkey Ctrl + c to uncomment.
+
+```{r}
+x <- c(2,5,3,9,8,11,6,20,21,4,12)  # This is the vector we want to find even values of
+```
+
+```{r}
+# count <- 0        # Start with zero valued object to count with
+# 
+# for (___ in ___) {
+# if(___ %% 2 == 0)  count = count+1        # Double percent sign (%%) is a modulus operator - spits out what remains from division by 2)
+# }
+# print(count)
+```
+
+#### Question 2: Now make a more general function that will do this for any vector x
+
+```{r}
+# name_function_here <- function(vec){  # make sure to name your function something
+#   count = 0
+#   for (___ in _){
+#     if(___ %% 2 == 0){
+#       count = _____
+#     }
+#   }
+#   return(____)
+# }
+```
+Recall: This will just create a function. You still have to use it!!
+
+
+#### Question 3: Write a for loop that iterates over the numbers 1 to 7 and prints the cube of each number using `print()`. Reference lab 04
+
+
+
+#### Question 4: Simulate 100 coin flips and export the simulation as a vector
+
+```{r}
+# flip_fun <- function(flips){
+#   df <- tibble(                      # You can call this anything, I choose to call it df
+#     ____ = rbinom(n = ____,
+#                   size = 1,
+#                   prob = ___)
+#   )
+#   return(___)                       # Always remember to specify what you want to be returned
+# }
+```
+
+
+
+#### Question 5: Now use the function from question 4 to simulate a bunch of coin flips and plot them on a histogram. Try a few different sample sizes!!
+
+hint: geom_histogram() and geom_bar() will both work for this question
+
+
+
+#### Question 6: Use the following tibble (dataframe) and write a for loop that finds the median value of each column
+
+
+```{r}
+df <- tibble(
+  a = rnorm(10),
+  b = rnorm(10),
+  c = rnorm(10),
+  d = rnorm(10)
+)
+
+# This just generates 10 observations sampled from the normal distribution
+```
+
+```{r}
+# output <- vector("double", ncol(df))  # Creates a vector of doubles (values with decimal places..) of length 4
+# 
+# for (i in __) {                      
+#   output[[i]] <- median(_____)      
+# }
+# 
+# output
+
+```
+Make sure to check your work
+
+```{r}
+median(df$a)
+median(df$b)
+median(df$c)
+median(df$d)
+```
+
+
+# Question 7: Generate 10 random normals from distributions with means of -10, 0, 10, and 100.
+
+(hint: you can adapt the code from above that was used to make the object df. Try `?rnorm()` to get some help)
+
+
+
+
+
+
+
+
+
