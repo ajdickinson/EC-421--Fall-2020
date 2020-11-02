@@ -1,8 +1,8 @@
 *Note: This material on loops is an excerpt from Grant McDermott’s Data
 science for economist course.*
 
-Lesson 0: Graphing with ggplot2
-===============================
+Lesson 00: Graphing with ggplot2
+--------------------------------
 
 Before we get into ggplot, let’s talk about `plot()` which is R’s base
 plotting package. It does a fine job of plotting things, and is quite
@@ -31,7 +31,7 @@ names(Auto)
 qplot(x = displ, y = cty, data = mpg)
 ```
 
-![](lab05_files/figure-markdown_github/unnamed-chunk-2-1.png)
+![](lab_05_files/figure-markdown_github/unnamed-chunk-2-1.png)
 
 but we can do better than that with ggplot2! But first we need to
 understand how to communicate with ggplot so it can do what we want it
@@ -73,7 +73,7 @@ Try this:
 ggplot(data = mpg)
 ```
 
-![](lab05_files/figure-markdown_github/unnamed-chunk-3-1.png)
+![](lab_05_files/figure-markdown_github/unnamed-chunk-3-1.png)
 
 We get a blank box. That’s because ggplot has some data, but no
 indication as to what goes on which axis, nor any idea of how to draw
@@ -85,7 +85,7 @@ Lets add the mapping
 ggplot(data = mpg, aes( x = displ, y = hwy))
 ```
 
-![](lab05_files/figure-markdown_github/unnamed-chunk-4-1.png)
+![](lab_05_files/figure-markdown_github/unnamed-chunk-4-1.png)
 
 Ok, now we have axes but nothing on the graph. We’ve told R what our
 axes are, but we haven’t told R how or what to draw. We can do that
@@ -100,7 +100,7 @@ out the rest.
 ggplot(data = mpg, aes(x = displ, y = hwy)) + geom_point()
 ```
 
-![](lab05_files/figure-markdown_github/unnamed-chunk-5-1.png)
+![](lab_05_files/figure-markdown_github/unnamed-chunk-5-1.png)
 
 Cool, that looks like the plot we made with qplot a second ago, with a
 lot more work. What’s the big deal?
@@ -117,7 +117,7 @@ ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, color = class)) + theme_minimal()
 ```
 
-![](lab05_files/figure-markdown_github/unnamed-chunk-6-1.png)
+![](lab_05_files/figure-markdown_github/unnamed-chunk-6-1.png)
 
 Maybe you prefer to map your dots to size for a more color-blind
 friendly graph (although viridis has a library that will pick colors
@@ -131,7 +131,7 @@ ggplot(data = mpg) +
 
     ## Warning: Using size for a discrete variable is not advised.
 
-![](lab05_files/figure-markdown_github/unnamed-chunk-7-1.png)
+![](lab_05_files/figure-markdown_github/unnamed-chunk-7-1.png)
 
 We can also split a dataset up into a bunch of mini-graphs and plot them
 in a group using `facet_wrap()`
@@ -143,7 +143,7 @@ ggplot(data = mpg) +
   facet_wrap(~ class, nrow = 2)
 ```
 
-![](lab05_files/figure-markdown_github/unnamed-chunk-8-1.png)
+![](lab_05_files/figure-markdown_github/unnamed-chunk-8-1.png)
 
 We can also do NON dot graphs by using a new geom. New geoms offer new
 ways to differentiate data, for instance, line graphs can have multiple
@@ -157,7 +157,7 @@ ggplot(data = mpg) +
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](lab05_files/figure-markdown_github/unnamed-chunk-9-1.png)
+![](lab_05_files/figure-markdown_github/unnamed-chunk-9-1.png)
 
 ``` r
 #can combine different types of geoms
@@ -168,7 +168,7 @@ ggplot(data = mpg) +
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](lab05_files/figure-markdown_github/unnamed-chunk-10-1.png)
+![](lab_05_files/figure-markdown_github/unnamed-chunk-10-1.png)
 
 Boxplots are also fairly easy to create!
 
@@ -178,7 +178,7 @@ ggplot(data = mpg, mapping = aes(x = class, y = hwy)) +
   coord_flip()
 ```
 
-![](lab05_files/figure-markdown_github/unnamed-chunk-11-1.png)
+![](lab_05_files/figure-markdown_github/unnamed-chunk-11-1.png)
 
 now that we have some basics down, we can make some plots with cool,
 relatively new datasets!
@@ -202,7 +202,8 @@ Let’s read these in (bob\_ross, ufo, and video\_games) in…
 ufo_sightings <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-06-25/ufo_sightings.csv")
 ```
 
-    ## Parsed with column specification:
+    ## 
+    ## -- Column specification --------------------------------------------------------
     ## cols(
     ##   date_time = col_character(),
     ##   city_area = col_character(),
@@ -222,7 +223,8 @@ ufo_sightings <- read_csv("https://raw.githubusercontent.com/rfordatascience/tid
 video_games <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-07-30/video_games.csv")
 ```
 
-    ## Parsed with column specification:
+    ## 
+    ## -- Column specification --------------------------------------------------------
     ## cols(
     ##   number = col_double(),
     ##   game = col_character(),
@@ -241,14 +243,14 @@ video_games <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidyt
 bob_ross <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-08-06/bob-ross.csv")
 ```
 
-    ## Parsed with column specification:
+    ## 
+    ## -- Column specification --------------------------------------------------------
     ## cols(
     ##   .default = col_double(),
     ##   EPISODE = col_character(),
     ##   TITLE = col_character()
     ## )
-
-    ## See spec(...) for full column specifications.
+    ## i Use `spec()` for the full column specifications.
 
 However, the issue is that we need to use both of the tools we learned
 about today to - Get these datasets into a format we can work with -
@@ -390,7 +392,7 @@ plot’s name to show it.
 plot1
 ```
 
-![](lab05_files/figure-markdown_github/unnamed-chunk-21-1.png)
+![](lab_05_files/figure-markdown_github/unnamed-chunk-21-1.png)
 
 And different TYPES of trees. In honor of the man, let’s make this more
 colorful and add some better axes labels. R has a TON of different
@@ -412,7 +414,7 @@ plot1 <- counts %>% head(15) %>%
 plot1
 ```
 
-![](lab05_files/figure-markdown_github/unnamed-chunk-22-1.png)
+![](lab_05_files/figure-markdown_github/unnamed-chunk-22-1.png)
 
 Ok, that was fun. Now let’s play around with the video games data we
 loaded (if you were coding along, it should be in a df called
@@ -457,7 +459,7 @@ video_games %>% ggplot(aes(x = average_playtime, y = metascore)) + geom_point()
 
     ## Warning: Removed 23840 rows containing missing values (geom_point).
 
-![](lab05_files/figure-markdown_github/unnamed-chunk-24-1.png)
+![](lab_05_files/figure-markdown_github/unnamed-chunk-24-1.png)
 
 oof, that’s really hard to read. Luckily, ggplot lets us “censor” our
 points by providing cutoffs to our x or y axis. Here’s how to do that:
@@ -474,7 +476,7 @@ video_games  %>% ggplot(aes(x = average_playtime, y = metascore, color = owners)
 
     ## Warning: Removed 26482 rows containing missing values (geom_point).
 
-![](lab05_files/figure-markdown_github/unnamed-chunk-25-1.png)
+![](lab_05_files/figure-markdown_github/unnamed-chunk-25-1.png)
 
 Cool! We can also zoom in on that big chunk of data if we want to check
 for any obscured trends.
@@ -490,7 +492,7 @@ video_games  %>% ggplot(aes(x = average_playtime, y = metascore, color = owners)
 
     ## Warning: Removed 26528 rows containing missing values (geom_point).
 
-![](lab05_files/figure-markdown_github/unnamed-chunk-26-1.png)
+![](lab_05_files/figure-markdown_github/unnamed-chunk-26-1.png)
 
 Kinda cool, huh?
 
@@ -531,7 +533,7 @@ ggplot(data = game_publishers) + geom_histogram(aes(x = revenue))
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](lab05_files/figure-markdown_github/unnamed-chunk-28-1.png)
+![](lab_05_files/figure-markdown_github/unnamed-chunk-28-1.png)
 
 ``` r
 #we can also use the tidyverse functions right inside of the ggplot function
@@ -541,7 +543,7 @@ ggplot(data = game_publishers %>% filter(revenue > 40)) + geom_histogram(aes(x =
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](lab05_files/figure-markdown_github/unnamed-chunk-29-1.png)
+![](lab_05_files/figure-markdown_github/unnamed-chunk-29-1.png)
 
 cool, moving on to some ufo sightings. Lets see what we can learn from
 this dataset. First, let’s poke at it a bit
@@ -616,7 +618,7 @@ ufo %>% ggplot(aes(x = month(date_time), y = country, fill = country)) + geom_de
 
     ## Picking joint bandwidth of 0.685
 
-![](lab05_files/figure-markdown_github/unnamed-chunk-33-1.png) It looks
+![](lab_05_files/figure-markdown_github/unnamed-chunk-33-1.png) It looks
 like Aliens prefer the late summer! (think about when summer is in AU)
 
 I wonder what time of day these sightings are happening?
@@ -628,7 +630,7 @@ ufo %>% ggplot(aes(x = hour(date_time), y = country, fill = country)) + geom_den
 
     ## Picking joint bandwidth of 1.78
 
-![](lab05_files/figure-markdown_github/unnamed-chunk-34-1.png)
+![](lab_05_files/figure-markdown_github/unnamed-chunk-34-1.png)
 
 Mostly at night! That makes sense!
 
@@ -649,21 +651,20 @@ ggplot(aes(x = year, y = total), data = ufo_total) + geom_line() +
        title = "Total Recorded UFO Sightings") 
 ```
 
-![](lab05_files/figure-markdown_github/unnamed-chunk-35-1.png)
+![](lab_05_files/figure-markdown_github/unnamed-chunk-35-1.png)
 
 Awesome! We seem to be getting a big spike in alien sightings sometime
 in the 90s and mid 2000s.
 
-Lesson 1: Functions, loops continued
-====================================
+Lesson 01: Functions, loops continued
+-------------------------------------
 
 ``` r
 if (!require("pacman")) install.packages("pacman")
 pacman::p_load(tidyverse)
 ```
 
-Quick review
-------------
+#### Quick review
 
 We have already seen and used a multitude of functions in R. Some of
 these functions come pre-packaged with base R (e.g. `mean()`), while
@@ -823,7 +824,7 @@ square(12)
     ##   <dbl>         <dbl>
     ## 1    12           144
 
-### Specifying default argument values
+#### Specifying default argument values
 
 Another thing worth noting about R functions is that you can assign
 default argument values. You have already encountered some examples of
@@ -866,8 +867,7 @@ intermediate objects that we created within the above functions (`x_sq`,
 moment to confirm this for yourself by looking in the “Environment” pane
 of your RStudio session.
 
-Iteration
----------
+### Iteration
 
 The most important early programming skill to master is iteration. In
 particular, we want to write functions that can iterate — or *map* —
@@ -880,7 +880,7 @@ advocate that you adopt what is known as a “functional programming”
 approach to writing loops. Let’s dive into the reasons why and how these
 approaches differ.
 
-### Vectorisation
+#### Vectorisation
 
 The first question you need to ask is: “Do I need to iterate at all?”
 You may remember from a previous lecture that I spoke about R being
@@ -917,7 +917,7 @@ Let’s explore with some simple examples (some of which are already
 vectorised) that provide a mental springboard for thinking about more
 complex cases.
 
-### *for* loops. Simple, but limited (and sometimes dangerous)
+#### *for* loops. Simple, but limited (and sometimes dangerous)
 
 In R, standard *for* loops take a pretty intuitive form. For example:
 
@@ -967,7 +967,7 @@ thing you can take away from today’s lecture. Thus, while it can
 certainly be applied to iteration, I’m going to cover it in its own
 section.
 
-### FP defined
+#### FP defined
 
 Here is [Hadley
 Wickham](http://adv-r.had.co.nz/Functional-programming.html) explaining
@@ -1021,7 +1021,7 @@ associated downsides by `*apply` family of functions in base R.
 
 Let’s explore these in more depth.
 
-### lapply and co.
+#### lapply and co.
 
 Base R contains a very useful family of `*apply` functions. I won’t go
 through all of these here — see `?apply` or [this blog
@@ -1138,7 +1138,7 @@ sapply(1:10, function(i) LETTERS[i])
 
     ##  [1] "A" "B" "C" "D" "E" "F" "G" "H" "I" "J"
 
-### Create and iterate over named functions
+#### Create and iterate over named functions
 
 As you may have guessed already, we can split the function and the
 iteration (and binding) into separate steps. This is generally a good
@@ -1222,6 +1222,118 @@ both inspiration and reference:
     tutorial](https://jennybc.github.io/purrr-tutorial) mini-website.
     (Bonus: She goes into more depth about working with lists and list
     columns.)
+
+Practice Lesson: For Loops and Functions
+----------------------------------------
+
+#### Question 1: Count the number of even integers in a vector
+
+Note: All the following code is commented out so that R markdown will
+compile!! First highlight the comment-out code, use hotkey Ctrl + c to
+uncomment.
+
+``` r
+x <- c(2,5,3,9,8,11,6,20,21,4,12)  # This is the vector we want to find even values of
+```
+
+``` r
+# count <- 0        # Start with zero valued object to count with
+# 
+# for (___ in ___) {
+# if(___ %% 2 == 0)  count = count+1        # Double percent sign (%%) is a modulus operator - spits out what remains from division by 2)
+# }
+# print(count)
+```
+
+#### Question 2: Now make a more general function that will do this for any vector x
+
+``` r
+# name_function_here <- function(vec){  # make sure to name your function something
+#   count = 0
+#   for (___ in _){
+#     if(___ %% 2 == 0){
+#       count = _____
+#     }
+#   }
+#   return(____)
+# }
+```
+
+Recall: This will just create a function. You still have to use it!!
+
+#### Question 3: Write a for loop that iterates over the numbers 1 to 7 and prints the cube of each number using `print()`. Reference lab 04
+
+#### Question 4: Simulate 100 coin flips and export the simulation as a vector
+
+``` r
+# flip_fun <- function(flips){
+#   df <- tibble(                      # You can call this anything, I choose to call it df
+#     ____ = rbinom(n = ____,
+#                   size = 1,
+#                   prob = ___)
+#   )
+#   return(___)                       # Always remember to specify what you want to be returned
+# }
+```
+
+#### Question 5: Now use the function from question 4 to simulate a bunch of coin flips and plot them on a histogram. Try a few different sample sizes!!
+
+hint: geom\_histogram() and geom\_bar() will both work for this question
+
+#### Question 6: Use the following tibble (dataframe) and write a for loop that finds the median value of each column
+
+``` r
+df <- tibble(
+  a = rnorm(10),
+  b = rnorm(10),
+  c = rnorm(10),
+  d = rnorm(10)
+)
+
+# This just generates 10 observations sampled from the normal distribution
+```
+
+``` r
+# output <- vector("double", ncol(df))  # Creates a vector of doubles (values with decimal places..) of length 4
+# 
+# for (i in __) {                      
+#   output[[i]] <- median(_____)      
+# }
+# 
+# output
+```
+
+Make sure to check your work
+
+``` r
+median(df$a)
+```
+
+    ## [1] 0.3547336
+
+``` r
+median(df$b)
+```
+
+    ## [1] -0.06381033
+
+``` r
+median(df$c)
+```
+
+    ## [1] 0.2996793
+
+``` r
+median(df$d)
+```
+
+    ## [1] 0.2929762
+
+Question 7: Generate 10 random normals from distributions with means of -10, 0, 10, and 100.
+============================================================================================
+
+(hint: you can adapt the code from above that was used to make the
+object df. Try `?rnorm()` to get some help)
 
 [1] Yes, it’s a function that let’s you write functions. Very meta.
 
