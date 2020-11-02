@@ -3,12 +3,6 @@ title: "Lab 05, Fall 2020"
 author: "Your Friendly GEs!"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output:
-  md_document:
-    variant: markdown_github
-  pdf_document:
-    toc: yes
-    toc_depth: '3'
-    latex_engine: xelatex
   html_document:
     df_print: paged
     keep_md: yes
@@ -17,11 +11,18 @@ output:
     toc: yes
     toc_depth: '3'
     toc_float: yes
+  md_document:
+    variant: markdown_github
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
   header-includes: \usepackage{amsmath}
 ---
+
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, cache = TRUE, dpi=300)
+knitr::opts_chunk$set(echo = TRUE)
 ```
+
 
 
 *Note: This material on loops is an excerpt from Grant McDermott's Data science for economist course.*
@@ -414,7 +415,7 @@ my_short_func <- function(ARGUMENTS) OPERATION
 
 Try to give your functions short, pithy names that are informative to both you and anyone else reading your code. This is harder than it sounds, but will pay off down the road.
 
-## A simple example
+### A simple example
 
 Let's write out a simple example function, which gives the square of an input number.
 
@@ -543,7 +544,7 @@ fahrenheit
 
 Unfortunately, basic *for* loops in R also come with some downsides. Historically, they used to be significantly slower and memory consumptive than alternative methods (see below). This has largely been resolved, but I've still run into cases where an inconspicuous *for* loop has brought an entire analysis crashing to its knees.^[[Exhibit A](https://github.com/grantmcdermott/bycatch/commit/18dbed157f0762bf4b44dfee437d6f319561c160). Trust me: debugging these cases is not much fun.] The bigger problem with *for* loops, however, is that they deviate from the norms and best practices of **functional programming**. 
 
-## Functional programming
+### Functional programming
 
 The concept of functional programming is arguably the most important thing you can take away from today's lecture. Thus, while it can certainly be applied to iteration, I'm going to cover it in its own section.
 
@@ -741,7 +742,7 @@ median(df$d)
 ```
 
 
-# Question 7: Generate 10 random normals from distributions with means of -10, 0, 10, and 100.
+#### Question 7: Generate 10 random normals from distributions with means of -10, 0, 10, and 100.
 
 (hint: you can adapt the code from above that was used to make the object df. Try `?rnorm()` to get some help)
 
