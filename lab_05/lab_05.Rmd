@@ -40,7 +40,7 @@ p_load(ISLR)
 #if p_load doesn't work, use below commands.
 #install.packages("ISLR",repos = "http://cran.us.r-project.org")
 #library(ISLR)
-names(Auto)
+names(mpg)
 ```
 
 
