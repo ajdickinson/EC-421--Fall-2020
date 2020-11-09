@@ -46,6 +46,9 @@ Some Useful Resources:
 **Lab 05**: [Learning R: Review Loops and Functions, ggplot2, for loop + function practice lesson](https://rpubs.com/adick/685216)
 - Functions, Loops, ggplot, practice
 
+**Lab 06**: [Learning R: Time Series Shenanigans](https://rpubs.com/adick/688839)
+- ADL(1,1) Models, Functions Practice, Gapminder
+
 If you're adventurous, Grant McDermott's data science for economists is an amazing resource. It's designed for PhD students, but not those with any experience with computers. If metrics is your calling, you might enjoy looking at these.
 
 [Grant's Notes](https://github.com/uo-ec607/lectures)
