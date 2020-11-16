@@ -35,7 +35,7 @@ We've done this bit before, but just to separate it out a bit, let's use `read_c
 
 
 ```{r}
-freddat <- read_csv("C:/Users/boyoon/Dropbox/EC421/lab_07/GDPData.csv")
+freddat <- read_csv("C:/Users/Ajdic/OneDrive - University Of Oregon/GE/EC 421 - Q12020/labs/lab_07/data/GDPData.csv")
 names(freddat)
 ```
 
@@ -88,7 +88,7 @@ Maybe we have a different story here if we introduce dynamics to our model.
 
 Now suppose you believe real gdp percent change from last period might depend on the rgdp from today and yesterday.In other words, we are are interested in estimating the following model:
 
-`rGDP_t = B0+B1employment_t+ B2employment_t-1 + + B3employment_t-2 + B4*CPI_t + B5*CPI_t-1 + u_t.`
+$$rGDP_t = \beta_0+\beta_1*employment_t+ \beta_2*employment_t-1 + + \beta_3*employment_t-2 + \beta_4*CPI_t + \beta_5*CPI_{t-1} + u_t$$
 
 But why stop at 1 lag for CPI? Maybe there's a longer-lasting impact, so let's go ahead and estimate a model with two lags of CPI as well.
 
@@ -373,6 +373,78 @@ waldtest(bg_mod, c("e_static_lag", "e_static_lag2"), terms = 2)
 ```
 
 So it looks like we have evidence of second order autocorrelation in our static model
+
+
+
+## Bonus Lesson: Tidyverse Practice
+
+We are going to use a data set called `nycflights13` from a package with the same name. To load the data, first 
+
+```{r}
+# install.packages("nycflights13")
+library(nycflights13)
+head(flights)
+```
+
+
+#### Task 00: Explore
+
+Take some time to check out the data. Obviously `head()`, `tail()`, and `glimpse()` are all super useful but they are only as useful as you are. This data comes from: https://github.com/hadley/nycflights13 
+
+In order to better understand each variable, all necessary info is located in the help file for the package at `?flights`
+
+
+#### Task 01: Filter, Arrange, Select
+
+###### Question 01: Find all flights that departed in November and December
+
+
+###### Question 02: Find all flights that flew to Houston (IAH or HOU are the two airport codes)
+
+
+###### Question 03: Find all flights that are operated by the airlines: United, American, or Delta
+
+
+###### Question 06: Find all flights that arrived more than two hours late but managed to leave on time
+
+
+###### Question 07: Were delayed by at least an hour, but managed to catch up over 30 minutes in flight
+
+
+###### Question 08: How many flights have a missing departure time (`dep_time`)?
+
+
+###### Question 09: Create a data set from flights, selecting only the columns (year, month, day, dep_delay, arr_delay, distance, air_time)
+
+With this new data, create two new variables:
+        
+  - `gain`: which is the difference between `dep_delay` and `arr_delay`
+  
+  - `speed`: `distance` divided by `airtime` multiplied by 60
+  
+
+###### Question 10: Find the 10 most delayed flights.
+
+
+###### Question 11: Find the 10 most delayed flights for every month. Hint: use `group_by()`
+        
+        
+###### Question 12: Which time of day is best to avoid flight delays?
+
+
+#### Task 02:
+
+Make some cool stuff using ggplot2. Be creative and try and make a cool visual.
+
+
+
+
+
+
+
+
+
+
 
 
 
