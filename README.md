@@ -51,6 +51,8 @@ Some Useful Resources:
 
 **Lab 07** [Learning R: Time Series Shenanigans 2.0] (https://rpubs.com/adick/691992)
 
+**Lab 08** [Learning R: Instrumental Variables] (https://rpubs.com/adick/695083)
+
 If you're adventurous, Grant McDermott's data science for economists is an amazing resource. It's designed for PhD students, but not those with any experience with computers. If metrics is your calling, you might enjoy looking at these.
 
 [Grant's Notes](https://github.com/uo-ec607/lectures)
